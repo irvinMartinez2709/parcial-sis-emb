@@ -63,7 +63,7 @@
 \rowcolor{cabecera}
 \textcolor{white}{\textbf{Integrante}} & \textcolor{white}{\textbf{Diapositivas}} & \textcolor{white}{\textbf{Total}} \\
 \hline
-Martinez Irvin & 1, 13 & 2 \\
+Martinez Irvin & 1, 12, 13 & 3 \\
 \hline
 Jimenez Adrian & 2, 3, 4 & 3 \\
 \hline
@@ -71,24 +71,26 @@ Caballero Jostin & 5, 6, 7 & 3 \\
 \hline
 Alfonso Gutierrez & 8, 9, 10, 11 & 4 \\
 \hline
-Todos & 12 & --- \\
-\hline
 \end{tabularx}
 
 \vspace{1.5cm}
 
 {\small\color{gristexto} Cada integrante debe dominar el contenido de sus diapositivas y estar preparado\\
-para explicar cualquier punto de las suyas. La diapositiva 12 es grupal.}
+para explicar cualquier punto de las suyas.}
 
 \end{center}
 \newpage
 
 % ═══ SECCION 1: MARTINEZ IRVIN ═══
-\section{Martinez Irvin --- Diapositivas 1 y 13}
+\section{Martinez Irvin --- Diapositivas 1, 12 y 13}
 
 \subsection{Diapositiva 1: Portada}
 
 \guion{Buenos dias, profesor. Somos el grupo de Sistemas Embebidos del segundo semestre. Mi nombre es Irvin Martinez, y mis companeros son Adrian Jimenez, Jostin Caballero y Alfonso Gutierrez. En las proximas diapositivas les vamos a presentar como, en cuatro semanas, aprendimos a construir un sistema embebido desde cero.}
+
+\subsection{Diapositiva 12: Estado del proyecto}
+
+\guion{Antes de las conclusiones, les quiero presentar el estado actual del proyecto. Lo que ya tenemos probado y funcionando es: Arduino programado desde cero, el motor DC girando en ambos sentidos con el chip L293D, el sensor HC-SR04 conectado con los cuatro LEDs de indicacion, el carrito con dos motores controlado por codigo, y la integracion completa de sensor, LEDs y motores. Lo que ainda falta por hacer es disenar la placa de la alarma en EasyEDA, fabricar o simular esa placa, afinar la respuesta del carrito, y documentar todo el proyecto.}
 
 \subsection{Diapositiva 13: Conclusiones}
 
@@ -145,12 +147,6 @@ para explicar cualquier punto de las suyas. La diapositiva 12 es grupal.}
 \subsection{Diapositiva 11: El carrito 4WD}
 
 \guion{En la ultima clase el profesor nos explico como controlar un carrito con cuatro motores. El carrito usa dos cables de control por lado: uno para el lado derecho y otro para el lado izquierdo. Hay cinco funciones de movimiento: adelante, donde ambos lados giran hacia adelante; atras, donde ambos giran en reversa; izquierda, donde el lado izquierdo gira y el derecho se para; derecha, donde el lado derecho gira y el izquierdo se para; y detener, donde ambos se apagan. La velocidad se controla con analogWrite, que acepta un valor de 0 a 255. El codigo que nos dejo el profesor es un loop automatico que hace el carrito avanzar, parar, ir en reversa, parar, girar a la izquierda, parar, girar a la derecha, y repetir.}
-
-% ═══ SECCION 5: DIAPOSITIVA GRUPAL ═══
-\newpage
-\section{Todos --- Diapositiva 12: Estado del proyecto}
-
-\guion{Les presentamos el estado actual del proyecto. Lo que ya tenemos probado y funcionando es: Arduino programado desde cero, el motor DC girando en ambos sentidos con el chip L293D, el sensor HC-SR04 conectado con los cuatro LEDs de indicacion, el carrito con dos motores controlado por codigo, y la integracion completa de sensor, LEDs y motores. Lo que ainda falta por hacer es disenar la placa de la alarma en EasyEDA, fabricar o simular esa placa, afinar la respuesta del carrito, y documentar todo el proyecto.}
 
 % ═══ CONSEJOS GENERALES ═══
 \newpage
