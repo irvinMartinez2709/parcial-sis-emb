@@ -1,0 +1,172 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[spanish,es-noshorthands]{babel}
+\usepackage{fontspec}
+\setmainfont{Arial}
+\setsansfont{Arial}
+\setmonofont{Consolas}
+\usepackage[letterpaper,top=2.2cm,bottom=2.4cm,left=2.6cm,right=2.6cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+\usepackage[hidelinks,pdftitle={Guia de Estudio - Parcial 1 Sistemas Embebidos},pdfauthor={Irvin Martinez}]{hyperref}
+
+\definecolor{rojotitle}{HTML}{B00000}
+\definecolor{rojosub}{HTML}{C00000}
+\definecolor{gristexto}{HTML}{555555}
+\definecolor{cabecera}{HTML}{1F3864}
+\definecolor{zebra}{HTML}{EEF2F8}
+
+\linespread{1.1}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.3}
+
+\titleformat{\section}{\Large\bfseries\color{rojotitle}}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\large\bfseries\color{rojosub}}{\thesubsection}{0.6em}{}
+\setlist[itemize]{label=\textcolor{rojosub}{\textbullet},leftmargin=1.5em,itemsep=3pt,topsep=4pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[L]{\scriptsize\color{gristexto}Sistemas Embebidos}
+\fancyfoot[R]{\scriptsize\color{gristexto}Irvin Martinez --- pág. \thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newcommand{\guion}[1]{\noindent\fbox{\parbox{0.95\textwidth}{\small\texttt{#1}}}\vspace{0.3cm}}
+
+\begin{document}
+
+% ═══ PORTADA ═══
+\thispagestyle{empty}
+\begin{center}
+\vspace*{2cm}
+
+{\Large\bfseries\color{rojotitle} Universidad Tecnologica de Panama}\\[0.3cm]
+{\small\color{gristexto} Facultad de Ingenieria de Sistemas Computacionales}\\[1.5cm]
+
+{\Huge\bfseries Guia de Estudio}\\[0.3cm]
+{\LARGE\bfseries\color{rojosub} Parcial 1 --- Sistemas Embebidos}\\[0.8cm]
+
+{\large II Semestre 2026}\\[0.3cm]
+{\color{gristexto} Profesor: Eloy}\\[2cm]
+
+\noindent\textcolor{rojotitle}{\rule{\textwidth}{1pt}}
+
+\vspace{1.5cm}
+
+{\large\bfseries Distribucion de diapositivas por integrante}\\[1cm]
+
+\begin{tabularx}{0.85\textwidth}{|>{\raggedright\arraybackslash}p{3.5cm}|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}
+\hline
+\rowcolor{cabecera}
+\textcolor{white}{\textbf{Integrante}} & \textcolor{white}{\textbf{Diapositivas}} & \textcolor{white}{\textbf{Total}} \\
+\hline
+Martinez Irvin & 1, 13 & 2 \\
+\hline
+Jimenez Adrian & 2, 3, 4 & 3 \\
+\hline
+Caballero Jostin & 5, 6, 7 & 3 \\
+\hline
+Alfonso Gutierrez & 8, 9, 10, 11 & 4 \\
+\hline
+Todos & 12 & --- \\
+\hline
+\end{tabularx}
+
+\vspace{1.5cm}
+
+{\small\color{gristexto} Cada integrante debe dominar el contenido de sus diapositivas y estar preparado\\
+para explicar cualquier punto de las suyas. La diapositiva 12 es grupal.}
+
+\end{center}
+\newpage
+
+% ═══ SECCION 1: MARTINEZ IRVIN ═══
+\section{Martinez Irvin --- Diapositivas 1 y 13}
+
+\subsection{Diapositiva 1: Portada}
+
+\guion{Buenos dias, profesor. Somos el grupo de Sistemas Embebidos del segundo semestre. Mi nombre es Irvin Martinez, y mis companeros son Adrian Jimenez, Jostin Caballero y Alfonso Gutierrez. En las proximas diapositivas les vamos a presentar como, en cuatro semanas, aprendimos a construir un sistema embebido desde cero.}
+
+\subsection{Diapositiva 13: Conclusiones}
+
+\guion{Para cerrar, les quiero compartir las cuatro cosas mas importantes que nos llevamos de este parcial. Primero: investigar primero. Antes de tocar cualquier componente, hay que entender que hay en el mercado y para que sirve. Segundo: simular ahorra tiempo. Usamos Tinkercad para confirmar que nuestra logica estaba bien antes de armar nada fisico, y eso nos evito errores. Tercero: la integracion es la clave. Un sensor no es nada solo, un motor no es nada solo. La utilidad real esta en conectar todo junto para que reaccione al entorno. Y cuarto: lo basico alcanza. Con un Arduino, un chip L293D y un sensor HC-SR04 ya se puede hacer algo que reaccione al mundo. Eso es todo, gracias profesor.}
+
+% ═══ SECCION 2: JIMENEZ ADRIAN ═══
+\newpage
+\section{Jimenez Adrian --- Diapositivas 2, 3 y 4}
+
+\subsection{Diapositiva 2: Panorama general}
+
+\guion{Les voy a dar un panorama general de lo que hicimos en las cuatro semanas. Todo comenzo en la semana uno, cuando el profesor nos pidio buscar un proyecto. Nosotros elegimos un sistema de alarma con detector de movimiento, y ahi conocimos EasyEDA, que es una herramienta para disenar placas de circuito. En la segunda semana nos dimos nuestro primer contacto con Arduino, una tarjeta Duemilanove, y tambien analizamos dispositivos comerciales que ya existen en el mercado. En la semana tres avanzamos con un puente H para controlar un motor DC, y en la semana cuatro anadimos un sensor de distancia, LEDs indicadores y armamos el carrito. Todo se construyo sobre la semana anterior.}
+
+\subsection{Diapositiva 3: Proyecto de alarma (Semana 1)}
+
+\guion{En la semana uno el profesor nos pidio que investigaramos y eligieramos un proyecto para el semestre. Nosotros encontramos un sistema de alarma antiseguridad con detector de movimiento modular usando ESP32. Lo que investigamos fue un proyecto publico que usaba sensores PIR y ultrasonicos para detectar movimiento, una sirena piezoelectrica como alerta, y un panel LED como indicador visual. Tambien vimos JLCPCB como una opcion economica para fabricar placas, y conocimos EasyEDA, que es la herramienta gratuita que vamos a usar para disenar nuestra propia placa.}
+
+\subsection{Diapositiva 4: Diseno de placa con EasyEDA}
+
+\guion{Despues de elegir el proyecto, descargamos EasyEDA y empezamos a aprender a usarlo. Vimos tutoriales y disenamos nuestro primer esquematico, que fue un generador de portadora con el chip NE555. Un esquematico es el diagrama del circuito con los simbolos de cada componente, y la placa de circuito impreso es donde se montan esos componentes fisicamente. El NE555 es un chip temporizador que genera pulsos electricos, y lo usamos como base para entender como se diseña algo desde cero en EasyEDA.}
+
+% ═══ SECCION 3: CABALLERO JOSTIN ═══
+\newpage
+\section{Caballero Jostin --- Diapositivas 5, 6 y 7}
+
+\subsection{Diapositiva 5: Arduino (Semana 2)}
+
+\guion{En la semana dos tuvimos nuestro primer contacto con hardware de verdad. Antes de eso todo fue en papel y en la pantalla. Aqui conectamos una tarjeta Arduino Duemilanove por cable USB a la laptop. Lo mas importante de Arduino es que tiene pines digitales, que solo pueden estar en HIGH o LOW, es decir en 5 voltios o en cero, y pines analogicos, que pueden leer valores de 0 a 1023. El programa tiene dos partes principales: la funcion setup, que se ejecuta una sola vez al inicio, y la funcion loop, que se repite infinitamente y es donde va toda la logica. Nosotros conectamos el Arduino, identificamos sus partes, abrimos el Arduino IDE y seleccionamos el puerto COM4 para programarlo.}
+
+\subsection{Diapositiva 6: Dispositivos comerciales}
+
+\guion{Tambien en la semana dos analizamos productos que ya existen en el mercado y que usan sistemas embebidos. Comparamos dispositivos WiFi con dispositivos autonomos. El Sonoff WiFi es un interruptor inteligente que se conecta a la red. La camara IP T3 es una camara de vigilancia con conexion de red. El Kasa KS200M es un enchufe inteligente que se controla desde una app. El GPS GP10 es un modulo de posicionamiento global. Y el rele HCW-M203 sirve para controlar dispositivos de alta potencia con una senal baja. Lo importante es que todos estos productos tienen un microcontrolador adentro que es basicamente lo mismo que nosotros estamos aprendiendo a usar.}
+
+\subsection{Diapositiva 7: Puente H y motor DC (Semana 3)}
+
+\guion{En la semana tres aprendimos a controlar un motor DC usando un puente H. Un puente H es como cuatro interruptores en forma de letra H. Al abrir un par de interruptores, la corriente fluye en un sentido y el motor gira hacia adelante. Al abrir los otros dos, la corriente se invierte y el motor gira en reversa. Si los cuatro estan apagados, el motor queda libre. Y si los cuatro estan encendidos, el motor se frena. Nosotros usamos el chip L293D, que es un puente H integrado. El codigo es sencillo: con digitalWrite podemos poner los pines IN1 e IN2 en HIGH o LOW para controlar el sentido del motor.}
+
+% ═══ SECCION 4: ALFONSO GUTIERREZ ═══
+\newpage
+\section{Alfonso Gutierrez --- Diapositivas 8, 9, 10 y 11}
+
+\subsection{Diapositiva 8: Pruebas de motor (Semana 3)}
+
+\guion{Despues de entender la teoria del puente H, pasamos a las pruebas. Primero simulamos el circuito completo en Tinkercad, que es un simulador gratuito. Esto nos permitio confirmar que la logica estaba correcta antes de tocar ningun componente fisico. Despues armamos el circuito real en una protoboard con el Arduino, el chip L293D y el motor DC, y el motor funciono exactamente como lo habiamos simulado.}
+
+\subsection{Diapositiva 9: Sensor de distancia HC-SR04 (Semana 4)}
+
+\guion{En la semana cuatro anadimos un sensor de distancia HC-SR04. Este sensor funciona mandando un pulso de sonido que rebota en el objeto mas cercano y regresa. Midiendo cuanto tarda en regresar, calculamos la distancia con la formula distancia igual a duracion por 0.034 dividido entre 2. El 0.034 es la velocidad del sonido en centimetros por microsegundo, y se divide entre 2 porque el pulso viaja hasta el objeto y vuelve, o sea que recorre dos veces la distancia. Conectamos cuatro LEDs que indican la distancia: rojo para menos de 25 centimetros que es peligro, naranja para 25 a 50 que es cerca, amarillo para 50 a 100 que es medio, y verde para mas de 100 que es libre.}
+
+\subsection{Diapositiva 10: Integracion sensor + LEDs + motores}
+
+\guion{Despues de probar cada componente por separado, los unimos todos en un solo programa. La logica es la siguiente: si el sensor detecta algo a menos de 25 centimetros, se enciende el LED rojo y los motores se detienen. Si esta entre 25 y 50 centimetros, se enciende el LED naranja y los motores avanzan. Si esta entre 50 y 100, LED amarillo y motores avanzan. Y si no hay nada cerca, LED verde, camino despejado. Asi el sensor controla automaticamente el comportamiento del carrito.}
+
+\subsection{Diapositiva 11: El carrito 4WD}
+
+\guion{En la ultima clase el profesor nos explico como controlar un carrito con cuatro motores. El carrito usa dos cables de control por lado: uno para el lado derecho y otro para el lado izquierdo. Hay cinco funciones de movimiento: adelante, donde ambos lados giran hacia adelante; atras, donde ambos giran en reversa; izquierda, donde el lado izquierdo gira y el derecho se para; derecha, donde el lado derecho gira y el izquierdo se para; y detener, donde ambos se apagan. La velocidad se controla con analogWrite, que acepta un valor de 0 a 255. El codigo que nos dejo el profesor es un loop automatico que hace el carrito avanzar, parar, ir en reversa, parar, girar a la izquierda, parar, girar a la derecha, y repetir.}
+
+% ═══ SECCION 5: DIAPOSITIVA GRUPAL ═══
+\newpage
+\section{Todos --- Diapositiva 12: Estado del proyecto}
+
+\guion{Les presentamos el estado actual del proyecto. Lo que ya tenemos probado y funcionando es: Arduino programado desde cero, el motor DC girando en ambos sentidos con el chip L293D, el sensor HC-SR04 conectado con los cuatro LEDs de indicacion, el carrito con dos motores controlado por codigo, y la integracion completa de sensor, LEDs y motores. Lo que ainda falta por hacer es disenar la placa de la alarma en EasyEDA, fabricar o simular esa placa, afinar la respuesta del carrito, y documentar todo el proyecto.}
+
+% ═══ CONSEJOS GENERALES ═══
+\newpage
+\section{Consejos para la exposicion}
+
+\begin{enumerate}
+  \item \textbf{No leer las diapositivas.} La diapositiva es un apoyo visual, no un guion. Ya tienes el guion en esta hoja, practica decirlo con tus propias palabras.
+  \item \textbf{Tiempo:} Apunta a 1--2 minutos por diapositiva. La presentacion total debe durar entre 12 y 15 minutos.
+  \item \textbf{Transiciones:} Al terminar tu parte, di quien sigue. Por ejemplo: \textit{``Ahora Adrian les va a explicar el panorama general.''}
+  \item \textbf{Codigo:} No leas linea por linea. Explica que hace el bloque. Por ejemplo: \textit{``Este codigo hace que el motor avance durante 2 segundos y luego pare.''}
+  \item \textbf{Imagenes:} Senala las imagenes cuando las menciones. Si esta en la pantalla, senaala.
+  \item \textbf{Preguntas:} Si el profesor pregunta algo que no te toca, no pasa nada. Puedes decir \textit{``Eso lo explica [nombre]''} o intentar responder si lo sabes.
+  \item \textbf{Practica:} Revisa la presentacion al menos una vez antes de exponer. Asegurate de saber que dice cada diapositiva que te toca.
+\end{enumerate}
+
+\vspace{0.5cm}
+\noindent\fcolorbox{rojotitle}{zebra}{\parbox{0.95\textwidth}{\small\textbf{Recordatorio:} La presentacion esta en linea en:\\ \texttt{irvinmartinez2709.github.io/parcial-sis-emb/} --- Puedes abrirla en tu navegador para practicar.}}
+
+\end{document}
