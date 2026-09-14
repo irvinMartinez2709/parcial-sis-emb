@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parcial 1 — Sistemas Embebidos</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'DM Sans',sans-serif;background:#090b10;color:#b0b8c8;}
+
+/* ═══ NAV ═══ */
+.nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;gap:0.7rem;
+  padding:0.5rem 1.3rem;
+  background:rgba(9,11,16,0.94);backdrop-filter:blur(8px);
+  border-top:1px solid #151922;
+}
+.nav button{
+  font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:600;
+  background:none;border:1px solid #1e2536;color:#5a6478;
+  padding:0.25rem 0.55rem;border-radius:3px;cursor:pointer;transition:all 0.12s;
+}
+.nav button:hover{border-color:#3b82f6;color:#3b82f6;}
+.nav .pips{display:flex;gap:3px;flex:1;justify-content:center;}
+.nav .pip{width:4px;height:4px;border-radius:50%;background:#1a1f2e;transition:all 0.2s;}
+.nav .pip.on{background:#3b82f6;width:14px;border-radius:2px;}
+.nav .ct{font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:#3b4258;}
+
+/* ═══ DECK ═══ */
+.deck{position:relative;height:100vh;width:100vw;}
+.slide{position:absolute;inset:0;display:none;overflow:hidden;}
+.slide.active{display:flex;}
+
+/* ═══ PORTADA ═══ */
+.cover{
+  flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:3vh 5vw;
+  background:radial-gradient(ellipse at 50% 40%,#111827 0%,#090b10 70%);
+}
+.cover .logos{display:flex;gap:1.6rem;align-items:center;margin-bottom:0.8rem;}
+.cover .logos img{height:44px;filter:brightness(0.85);}
+.cover .pill{
+  font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:600;
+  letter-spacing:0.14em;text-transform:uppercase;color:#3b82f6;
+  border:1px solid #1a2744;padding:0.2rem 0.6rem;border-radius:2px;margin-bottom:0.7rem;
+}
+.cover h1{font-size:2.5rem;font-weight:900;color:#e8ecf2;line-height:1.06;margin-bottom:0.3rem;}
+.cover h1 b{color:#3b82f6;}
+.cover .sub{font-size:0.85rem;color:#5a6478;max-width:440px;line-height:1.5;margin-bottom:1.3rem;}
+.cover .team{display:flex;flex-wrap:wrap;gap:0.28rem;justify-content:center;}
+.cover .mem{
+  font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:500;
+  color:#8892a8;border:1px solid #1a1f2e;padding:0.22rem 0.55rem;
+  border-radius:3px;background:#0d1017;
+}
+.cover .prof{font-size:0.72rem;color:#3b4258;margin-top:0.9rem;}
+
+/* ═══ IMAGEN: object-fit CONTAIN con fondo oscuro ═══ */
+.img-box{
+  position:relative;overflow:hidden;background:#080a0f;
+  display:flex;align-items:center;justify-content:center;
+}
+.img-box img{
+  width:100%;height:100%;object-fit:contain;display:block;
+}
+
+/* ═══ LAYOUTS ═══ */
+
+/* Split 50/50 */
+.split{display:flex;height:100%;}
+.split .txt{flex:0 0 42%;padding:3vh 3vw;display:flex;flex-direction:column;justify-content:center;background:#0c0e14;overflow-y:auto;}
+.split .img-area{flex:1;display:flex;align-items:center;justify-content:center;padding:1.5vh 1.5vw;background:#080a0f;}
+.split .img-area .img-box{width:100%;height:100%;border-radius:6px;border:1px solid #1a1f2e;}
+
+/* Split invertido */
+.split-r .txt{order:2;}
+.split-r .img-area{order:1;}
+
+/* 2 imágenes apiladas en la zona de imagen */
+.split .img-area.stacked{flex-direction:column;gap:0.4rem;}
+.split .img-area.stacked .img-box{flex:1;}
+
+/* 3 columnas: 1/3 texto + 2/3 imagen */
+.wide-img{display:flex;height:100%;}
+.wide-img .txt{flex:0 0 35%;padding:3vh 2.5vw;display:flex;flex-direction:column;justify-content:center;background:#0c0e14;overflow-y:auto;}
+.wide-img .img-area{flex:1;display:flex;align-items:center;justify-content:center;padding:1.5vh 1.5vw;background:#080a0f;}
+.wide-img .img-area .img-box{width:100%;height:100%;border-radius:6px;border:1px solid #1a1f2e;}
+
+/* 3 columnas invertido */
+.wide-img-r{display:flex;height:100%;}
+.wide-img-r .txt{order:2;flex:0 0 35%;padding:3vh 2.5vw;display:flex;flex-direction:column;justify-content:center;background:#0c0e14;overflow-y:auto;}
+.wide-img-r .img-area{order:1;flex:1;display:flex;align-items:center;justify-content:center;padding:1.5vh 1.5vw;background:#080a0f;}
+.wide-img-r .img-area .img-box{width:100%;height:100%;border-radius:6px;border:1px solid #1a1f2e;}
+
+/* Texto arriba + galería abajo */
+.top-gallery{display:flex;flex-direction:column;height:100%;}
+.top-gallery .top{flex:0 0 auto;padding:2vh 3.5vw 0.8vh;background:#0c0e14;}
+.top-gallery .gallery{flex:1;display:flex;gap:0.4rem;padding:0.5vh 3.5vw 2.5vh;}
+.top-gallery .gallery .img-box{flex:1;border-radius:6px;border:1px solid #1a1f2e;}
+.top-gallery .gallery .cap{
+  font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:#4a5468;
+  text-align:center;margin-top:0.2rem;
+}
+.top-gallery .gallery>div{display:flex;flex-direction:column;}
+
+/* Galería 2x2 */
+.g2x2{display:flex;flex-direction:column;height:100%;}
+.g2x2 .header{flex:0 0 auto;padding:2vh 3.5vw 0.6vh;background:#0c0e14;}
+.g2x2 .grid{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:0.4rem;padding:0.3vh 3.5vw 2.5vh;}
+.g2x2 .grid .img-box{border-radius:6px;border:1px solid #1a1f2e;}
+
+/* ═══ TIPOGRAFÍA ═══ */
+.sec{
+  font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:600;
+  letter-spacing:0.13em;text-transform:uppercase;color:#3b82f6;
+  margin-bottom:0.4rem;display:flex;align-items:center;gap:5px;
+}
+.sec::before{content:'';width:10px;height:1px;background:#3b82f6;}
+.sec.orange{color:#f97316;}.sec.orange::before{background:#f97316;}
+.sec.green{color:#22c55e;}.sec.green::before{background:#22c55e;}
+.sec.purple{color:#a78bfa;}.sec.purple::before{background:#a78bfa;}
+.sec.red{color:#f87171;}.sec.red::before{background:#f87171;}
+
+h2{font-size:1.5rem;font-weight:800;color:#e8ecf2;line-height:1.1;margin-bottom:0.3rem;}
+h2 em{font-style:normal;color:#3b82f6;}
+h2 .or{color:#f97316;}
+h2 .gr{color:#22c55e;}
+h2 .pu{color:#a78bfa;}
+
+.desc{font-size:0.78rem;color:#7a849a;line-height:1.5;max-width:480px;}
+.desc strong{color:#c0c8d8;}
+
+/* ═══ BOX ═══ */
+.box{
+  background:#0d1017;border:1px solid #181d28;border-radius:5px;
+  padding:0.7rem 0.9rem;margin-top:0.45rem;
+}
+.box h4{
+  font-size:0.65rem;font-weight:700;color:#c0c8d8;margin-bottom:0.25rem;
+  font-family:'JetBrains Mono',monospace;letter-spacing:0.03em;
+}
+.box p,.box li{font-size:0.74rem;color:#7a849a;line-height:1.45;}
+.box ul{padding-left:0.8rem;}
+.box li{margin-bottom:0.18rem;}
+.box li::marker{color:#3b82f6;}
+.box strong{color:#c0c8d8;}
+
+/* ═══ CODE ═══ */
+.code{
+  background:#0a0c12;border:1px solid #181d28;border-radius:5px;
+  padding:0.65rem 0.8rem;font-family:'JetBrains Mono',monospace;
+  font-size:0.64rem;line-height:1.55;color:#6b7a94;
+  overflow-x:auto;white-space:pre;
+}
+.code .k{color:#c084fc;}
+.code .f{color:#67e8f9;}
+.code .n{color:#fbbf24;}
+.code .c{color:#2a3348;font-style:italic;}
+
+/* ═══ TABLE ═══ */
+.tbl{width:100%;border-collapse:collapse;font-size:0.72rem;margin-top:0.35rem;}
+.tbl th{
+  font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:600;
+  letter-spacing:0.05em;text-transform:uppercase;
+  color:#5a6478;text-align:left;padding:0.35rem 0.4rem;
+  border-bottom:1px solid #1a1f2e;background:#0c0e14;
+}
+.tbl td{padding:0.3rem 0.4rem;border-bottom:1px solid #141820;color:#b0b8c8;}
+.tbl tr:last-child td{border-bottom:none;}
+
+/* ═══ TIMELINE ═══ */
+.tl{display:flex;flex-direction:column;position:relative;padding-left:12px;margin-top:0.4rem;}
+.tl::before{content:'';position:absolute;left:2px;top:3px;bottom:3px;width:1px;background:#1a1f2e;}
+.tl .ti{position:relative;padding:0.28rem 0;}
+.tl .ti::before{
+  content:'';position:absolute;left:-14px;top:0.5rem;
+  width:5px;height:5px;border-radius:1px;background:#3b82f6;
+}
+.tl .ti:nth-child(2)::before{background:#f97316;}
+.tl .ti:nth-child(3)::before{background:#22c55e;}
+.tl .ti:nth-child(4)::before{background:#a78bfa;}
+.tl .ti .tw{
+  font-family:'JetBrains Mono',monospace;font-size:0.52rem;
+  color:#3b82f6;font-weight:600;letter-spacing:0.04em;
+}
+.tl .ti p{font-size:0.74rem;color:#7a849a;margin-top:0.06rem;line-height:1.35;}
+
+/* ═══ TAGS ═══ */
+.tag{
+  display:inline-block;font-family:'JetBrains Mono',monospace;
+  font-size:0.52rem;font-weight:600;letter-spacing:0.03em;
+  padding:0.15rem 0.4rem;border-radius:2px;border:1px solid;
+  margin:0.06rem 0.1rem 0.06rem 0;
+}
+.tag.b{color:#67e8f9;border-color:rgba(103,232,249,0.2);background:rgba(103,232,249,0.04);}
+.tag.m{color:#c084fc;border-color:rgba(192,132,252,0.2);background:rgba(192,132,252,0.04);}
+.tag.g{color:#86efac;border-color:rgba(134,239,172,0.2);background:rgba(134,239,172,0.04);}
+.tag.a{color:#fbbf24;border-color:rgba(251,191,36,0.2);background:rgba(251,191,36,0.04);}
+
+/* ═══ CAPTION ═══ */
+.cap{
+  font-family:'JetBrains Mono',monospace;font-size:0.48rem;
+  color:#4a5468;text-align:center;margin-top:0.2rem;
+}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:900px){
+  .split,.split-r,.wide-img,.wide-img-r{flex-direction:column;}
+  .split .txt,.split .img-area,.split-r .txt,.split-r .img-area,
+  .wide-img .txt,.wide-img .img-area,.wide-img-r .txt,.wide-img-r .img-area{flex:none;}
+  .split .img-area,.split-r .img-area,.wide-img .img-area,.wide-img-r .img-area{min-height:35vh;}
+  h2{font-size:1.15rem;}
+  .cover h1{font-size:1.5rem;}
+  .g2x2 .grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+<!-- ═══ 1 · PORTADA — Martínez Irvin ═══ -->
+<section class="slide active cover">
+  <div class="logos">
+    <img src="assets/utp_logo.png" alt="UTP">
+    <img src="assets/fisc_logo.png" alt="FISC">
+  </div>
+  <div class="pill">Parcial 1 &mdash; II Semestre 2026</div>
+  <h1>Sistemas <b>Embebidos</b></h1>
+  <p class="sub">Cuatro semanas entendiendo como se construye un sistema embebido: desde investigar un proyecto hasta armar un carrito que reacciona a su entorno.</p>
+  <div class="team">
+    <span class="mem">Martinez Irvin &middot; 4-834-1736</span>
+    <span class="mem">Jimenez Adrian &middot; 4-839-2413</span>
+    <span class="mem">Caballero Jostin &middot; 4-836-1163</span>
+    <span class="mem">Alfonso Gutierrez &middot; 4-839-753</span>
+  </div>
+  <div class="prof">Profesor: Eloy &middot; Facultad de Ingenieria de Sistemas Computacionales</div>
+</section>
+
+<!-- ═══ 2 · PANORAMA — Jiménez Adrián ═══ -->
+<section class="slide">
+  <div class="split">
+    <div class="txt">
+      <div class="sec">Panorama general</div>
+      <h2>Cuatro semanas, <em>un mismo hilo</em></h2>
+      <p class="desc">Cada semana se construyo sobre la anterior. No todo salio como lo habiamos planeado, pero poco a poco fuimos entendiendo como funciona un sistema embebido.</p>
+      <div class="tl">
+        <div class="ti"><span class="tw">SEMANA 1</span><p>Elegimos un proyecto de RFID y aprendimos que es EasyEDA.</p></div>
+        <div class="ti"><span class="tw">SEMANA 2</span><p>Primer contacto con Arduino y analizamos dispositivos comerciales.</p></div>
+        <div class="ti"><span class="tw">SEMANA 3</span><p>Hicimos girar un motor DC con un puente H.</p></div>
+        <div class="ti"><span class="tw">SEMANA 4</span><p>Anadimos sensor de distancia, LEDs y armamos el carrito.</p></div>
+      </div>
+      <div class="box" style="margin-top:0.5rem;">
+        <h4>Componentes</h4>
+        <div style="display:flex;flex-wrap:wrap;gap:0.1rem;margin-top:0.15rem;">
+          <span class="tag b">Arduino</span><span class="tag m">L293D</span>
+          <span class="tag g">HC-SR04</span><span class="tag a">Motores DC</span>
+          <span class="tag b">Protoboard</span><span class="tag m">EasyEDA</span>
+        </div>
+      </div>
+    </div>
+    <div class="img-area">
+      <div class="img-box"><img src="assets/idea_rfid.jpg" alt="Concepto del proyecto RFID"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 3 · PROYECTO RFID — Jiménez Adrián ═══ -->
+<section class="slide">
+  <div class="split split-r">
+    <div class="txt">
+      <div class="sec orange">Semana 1</div>
+      <h2><em class="or">Elegimos</em> nuestro proyecto</h2>
+      <p class="desc">El profesor nos pidio buscar un proyecto para el semestre. Investigamos y encontramos un sistema de identificacion con RFID y ESP32.</p>
+      <div class="box">
+        <h4>Que investigamos</h4>
+        <ul>
+          <li>Un proyecto publico de identificacion de carnet con RFID y ESP32.</li>
+          <li>Articulos que muestran como se lee una tarjeta y se organiza la informacion.</li>
+          <li>JLCPCB como opcion economica para fabricar placas.</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h4>Que es EasyEDA</h4>
+        <p>Una herramienta gratuita para disenar esquematicos y placas de circuito impreso. El profesor nos dijo que la ibamos a usar para disenar nuestra placa.</p>
+      </div>
+    </div>
+    <div class="img-area stacked">
+      <div class="img-box"><img src="assets/idea_rfid.jpg" alt="Concepto RFID"></div>
+      <div class="img-box"><img src="assets/easyeda_sitio.jpg" alt="Sitio EasyEDA"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 4 · EASYEDA — Jiménez Adrián ═══ -->
+<section class="slide">
+  <div class="top-gallery">
+    <div class="top">
+      <div class="sec purple">Diseno de placa &middot; EasyEDA</div>
+      <h2><em class="pu">Aprendimos</em> a disenar PCBs</h2>
+      <p class="desc">Descargamos EasyEDA, vimos tutoriales, y disenamos nuestro primer esquematico: un generador de portadora con NE555.</p>
+    </div>
+    <div class="gallery">
+      <div><div class="img-box"><img src="assets/easyeda_primera.jpg" alt="EasyEDA primera impresion"></div><div class="cap">Primera vez abriendo EasyEDA</div></div>
+
+      <div><div class="img-box"><img src="assets/easyeda_dibujo.jpg" alt="Diagrama NE555 a mano"></div><div class="cap">Diagrama NE555 dibujado a mano</div></div>
+      <div><div class="img-box"><img src="assets/easyeda_pcb.jpg" alt="EasyEDA busqueda componentes"></div><div class="cap">Busqueda de componentes NE555</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 5 · ARDUINO — Caballero Jostin ═══ -->
+<section class="slide">
+  <div class="wide-img-r">
+    <div class="txt">
+      <div class="sec">Semana 2</div>
+      <h2>Conectamos un <em>Arduino</em></h2>
+      <p class="desc">Hasta la semana anterior todo fue en papel. Aqui tocamos hardware de verdad: una tarjeta Duemilanove, un cable USB, y el Arduino IDE.</p>
+      <div class="box">
+        <h4>Que aprendimos</h4>
+        <ul>
+          <li><strong>Pines digitales:</strong> Solo HIGH (5V) o LOW (0V).</li>
+          <li><strong>Pines analogicos:</strong> Leen valores de 0 a 1023.</li>
+          <li><strong>setup():</strong> Se ejecuta una vez al inicio.</li>
+          <li><strong>loop():</strong> Se repite infinitamente, ahi va la logica.</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h4>Lo que hicimos</h4>
+        <ul>
+          <li>Conectamos el Arduino por USB a la laptop.</li>
+          <li>Identificamos sus partes: pines, alimentacion, LEDs.</li>
+          <li>Abrimos el Arduino IDE y seleccionamos el puerto COM4.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="img-area stacked">
+      <div class="img-box"><img src="assets/evid_trabajo_conectando.jpeg" alt="Conectando Arduino"></div>
+      <div class="img-box"><img src="assets/evid_trabajo_workspace.jpeg" alt="Banco de trabajo"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 6 · DISPOSITIVOS — Caballero Jostin ═══ -->
+<section class="slide">
+  <div class="top-gallery">
+    <div class="top">
+      <div class="sec">Informe 2 &middot; Dispositivos comerciales</div>
+      <h2>Lo que ya <em>existe</em> en el mercado</h2>
+      <p class="desc">Analizamos productos que usan sistemas embebidos. Comparamos WiFi vs autonomos.</p>
+    </div>
+    <div class="gallery">
+      <div><div class="img-box"><img src="assets/dev_sonoff.jpg" alt="Sonoff"></div><div class="cap">Sonoff WiFi</div></div>
+      <div><div class="img-box"><img src="assets/dev_camara.jpg" alt="Camara"></div><div class="cap">Camara IP T3</div></div>
+      <div><div class="img-box"><img src="assets/dev_kasa.jpg" alt="Kasa"></div><div class="cap">Kasa KS200M</div></div>
+      <div><div class="img-box"><img src="assets/dev_gps.jpg" alt="GPS"></div><div class="cap">GPS GP10</div></div>
+      <div><div class="img-box"><img src="assets/dev_rele.jpg" alt="Relé"></div><div class="cap">Relé HCW-M203</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 7 · PUENTE H — Caballero Jostin ═══ -->
+<section class="slide">
+  <div class="split">
+    <div class="txt">
+      <div class="sec green">Semana 3</div>
+      <h2><em class="gr">Puente H</em> y motor DC</h2>
+      <p class="desc">Un puente H es como cuatro interruptores en forma de "H". Al abrir un par, la corriente fluye en un sentido; al abrir los otros dos, se invierte.</p>
+      <table class="tbl">
+        <tr><th>IN1</th><th>IN2</th><th>Resultado</th></tr>
+        <tr><td>HIGH</td><td>LOW</td><td>Gira hacia adelante</td></tr>
+        <tr><td>LOW</td><td>HIGH</td><td>Gira en reversa</td></tr>
+        <tr><td>LOW</td><td>LOW</td><td>Libre</td></tr>
+        <tr><td>HIGH</td><td>HIGH</td><td>Freno</td></tr>
+      </table>
+      <div class="code" style="margin-top:0.4rem;"><span class="c">// Adelante 2 segundos</span>
+<span class="f">digitalWrite</span>(in1, <span class="k">HIGH</span>);
+<span class="f">digitalWrite</span>(in2, <span class="k">LOW</span>);
+<span class="f">delay</span>(<span class="n">2000</span>);
+
+<span class="c">// Atras 2 segundos</span>
+<span class="f">digitalWrite</span>(in1, <span class="k">LOW</span>);
+<span class="f">digitalWrite</span>(in2, <span class="k">HIGH</span>);
+<span class="f">delay</span>(<span class="n">2000</span>);</div>
+    </div>
+    <div class="img-area">
+      <div class="img-box"><img src="assets/diagrama_easyeda.jpg" alt="Esquematico de control de motores en EasyEDA"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 8 · PRUEBAS MOTOR — Alfonso ═══ -->
+<section class="slide">
+  <div class="top-gallery">
+    <div class="top">
+      <div class="sec green">Semana 3 &middot; Pruebas</div>
+      <h2><em class="gr">Probamos</em> y funciono</h2>
+      <p class="desc">Simulamos en Tinkercad, despues armamos el circuito en la protoboard con el motor real.</p>
+    </div>
+    <div class="gallery">
+      <div><div class="img-box"><img src="assets/semana3_protoboard_motor.jpeg" alt="Protoboard con motor"></div><div class="cap">Arduino + L293D + motor</div></div>
+      <div><div class="img-box"><img src="assets/pruebas_motores_tinkercad.jpg" alt="Simulacion en Tinkercad"></div><div class="cap">Simulacion en Tinkercad</div></div>
+      <div><div class="img-box"><img src="assets/semana3_motor_funcionando.jpeg" alt="Motor funcionando"></div><div class="cap">Motor en movimiento</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 9 · SENSOR — Alfonso ═══ -->
+<section class="slide">
+  <div class="split split-r">
+    <div class="txt">
+      <div class="sec red">Semana 4</div>
+      <h2>Sensor de distancia <em class="gr">HC-SR04</em></h2>
+      <p class="desc">El sensor manda un pulso de sonido que rebota en el objeto y regresa. Midiendo cuanto tarda, calculamos la distancia.</p>
+      <div class="box">
+        <h4>La formula</h4>
+        <p style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;color:#67e8f9;">distancia = duracion * 0.034 / 2</p>
+        <p style="margin-top:0.15rem;">El 0.034 es la velocidad del sonido en cm/us. Se divide entre 2 porque el pulso viaja hasta el objeto y vuelve.</p>
+      </div>
+      <div class="box">
+        <h4>Que controlan los LEDs</h4>
+        <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.2rem;">
+          <div style="display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;border-radius:50%;background:#ef4444;"></span><span style="font-size:0.64rem;color:#7a849a;">&lt;25cm peligro</span></div>
+          <div style="display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;border-radius:50%;background:#f97316;"></span><span style="font-size:0.64rem;color:#7a849a;">25-50cm cerca</span></div>
+          <div style="display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;border-radius:50%;background:#eab308;"></span><span style="font-size:0.64rem;color:#7a849a;">50-100cm medio</span></div>
+          <div style="display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;border-radius:50%;background:#22c55e;"></span><span style="font-size:0.64rem;color:#7a849a;">&gt;100cm libre</span></div>
+        </div>
+      </div>
+      <div class="code" style="margin-top:0.4rem;"><span class="k">const</span> <span class="k">int</span> TRIG = A0, ECHO = A1;
+<span class="c">// Enviar pulso</span>
+<span class="f">digitalWrite</span>(TRIG, LOW);
+<span class="f">delayMicroseconds</span>(<span class="n">2</span>);
+<span class="f">digitalWrite</span>(TRIG, HIGH);
+<span class="f">delayMicroseconds</span>(<span class="n">10</span>);
+<span class="f">digitalWrite</span>(TRIG, LOW);
+<span class="c">// Calcular distancia</span>
+<span class="k">long</span> dur = <span class="f">pulseIn</span>(ECHO, HIGH);
+<span class="k">int</span> dist = dur * <span class="n">0.034</span> / <span class="n">2</span>;</div>
+    </div>
+    <div class="img-area stacked">
+      <div class="img-box"><img src="assets/prueba_leds.jpeg" alt="Prueba de LEDs"></div>
+      <div class="img-box"><img src="assets/carrito_sensores.jpeg" alt="Sensores HC-SR04 en el carrito"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 10 · INTEGRACIÓN — Alfonso ═══ -->
+<section class="slide">
+  <div class="split">
+    <div class="txt">
+      <div class="sec red">Semana 4 &middot; Integracion</div>
+      <h2>Sensor + LEDs + <em class="pu">motores</em></h2>
+      <p class="desc">Unimos todo en un solo programa. El sensor controla los LEDs, y segun la distancia, los motores se mueven o se detienen.</p>
+      <div class="box">
+        <h4>La logica completa</h4>
+        <ul>
+          <li><strong style="color:#ef4444;">&lt;25 cm:</strong> LED rojo, motores detenidos.</li>
+          <li><strong style="color:#f97316;">25-50 cm:</strong> LED naranja, motores avanzan.</li>
+          <li><strong style="color:#eab308;">50-100 cm:</strong> LED amarillo, motores avanzan.</li>
+          <li><strong style="color:#22c55e;">&gt;100 cm:</strong> LED verde, camino despejado.</li>
+        </ul>
+      </div>
+      <div class="code"><span class="c">// Si hay obstaculo, frenar</span>
+<span class="k">if</span> (distancia &lt; <span class="n">25</span>) {
+  <span class="f">digitalWrite</span>(motor1A, LOW);
+  <span class="f">digitalWrite</span>(leds[<span class="n">0</span>], HIGH);
+} <span class="k">else</span> {
+  <span class="f">digitalWrite</span>(motor1A, HIGH);
+  <span class="f">digitalWrite</span>(leds[<span class="n">3</span>], HIGH);
+}</div>
+    </div>
+    <div class="img-area">
+      <div class="img-box"><img src="assets/remplazo.jpg" alt="Integracion sensor-LEDs-motores"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 11 · CARRITO — Alfonso ═══ -->
+<section class="slide">
+  <div class="split">
+    <div class="txt">
+      <div class="sec purple">Ultima clase</div>
+      <h2><em class="pu">El carrito</em> 4WD</h2>
+      <p class="desc">El profesor nos explico como controlar un carrito con cuatro motores usando dos cables de control por lado. Nos dejo un codigo que debemos probar.</p>
+      <div class="code"><span class="cm">// Lado derecho</span>
+<span class="k">const</span> <span class="k">int</span> NARANJA = <span class="n">3</span>;
+<span class="k">const</span> <span class="k">int</span> BLANCO  = <span class="n">5</span>;
+
+<span class="cm">// Lado izquierdo</span>
+<span class="k">const</span> <span class="k">int</span> CHOCOLATE = <span class="n">4</span>;
+<span class="k">const</span> <span class="k">int</span> NEGRO     = <span class="n">2</span>;
+
+<span class="kw">int</span> velocidad = <span class="n">200</span>;
+
+<span class="kw">void</span> <span class="f">adelante</span>() {
+  <span class="f">analogWrite</span>(NARANJA, velocidad);
+  <span class="f">digitalWrite</span>(BLANCO, LOW);
+  <span class="f">analogWrite</span>(CHOCOLATE, velocidad);
+  <span class="f">digitalWrite</span>(NEGRO, LOW);
+}
+
+<span class="kw">void</span> <span class="f">atras</span>() {
+  <span class="f">digitalWrite</span>(NARANJA, LOW);
+  <span class="f">analogWrite</span>(BLANCO, velocidad);
+  <span class="f">digitalWrite</span>(CHOCOLATE, LOW);
+  <span class="f">analogWrite</span>(NEGRO, velocidad);
+}
+
+<span class="kw">void</span> <span class="f">izquierda</span>() {
+  <span class="f">analogWrite</span>(NARANJA, velocidad);
+  <span class="f">digitalWrite</span>(BLANCO, LOW);
+  <span class="f">digitalWrite</span>(CHOCOLATE, LOW);
+  <span class="f">analogWrite</span>(NEGRO, velocidad);
+}
+
+<span class="kw">void</span> <span class="f">derecha</span>() {
+  <span class="f">digitalWrite</span>(NARANJA, LOW);
+  <span class="f">analogWrite</span>(BLANCO, velocidad);
+  <span class="f">analogWrite</span>(CHOCOLATE, velocidad);
+  <span class="f">digitalWrite</span>(NEGRO, LOW);
+}
+
+<span class="kw">void</span> <span class="f">detener</span>() {
+  <span class="f">digitalWrite</span>(NARANJA, LOW);
+  <span class="f">digitalWrite</span>(BLANCO, LOW);
+  <span class="f">digitalWrite</span>(CHOCOLATE, LOW);
+  <span class="f">digitalWrite</span>(NEGRO, LOW);
+}</div>
+    </div>
+    <div class="img-area stacked">
+      <div class="img-box"><img src="assets/carrito_vista_general.jpeg" alt="Vista general del carrito"></div>
+      <div class="img-box"><img src="assets/carrito_arduino_detalle.jpeg" alt="Detalle de conexiones en Arduino"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 12 · ESTADO — Todos ═══ -->
+<section class="slide">
+  <div class="split">
+    <div class="txt">
+      <div class="sec">Donde estamos</div>
+      <h2>Lo que <em>funciona</em> y lo que <em>falta</em></h2>
+      <div class="box" style="border-top:2px solid #22c55e;">
+        <h4 style="color:#22c55e;">Probado y funcionando</h4>
+        <ul>
+          <li>Arduino programado desde cero</li>
+          <li>Motor DC en ambos sentidos con L293D</li>
+          <li>Sensor HC-SR04 con 4 LEDs</li>
+          <li>Carrito con 2 motores</li>
+          <li>Integracion sensor-LEDs-motores</li>
+        </ul>
+      </div>
+      <div class="box" style="border-top:2px solid #f59e0b;">
+        <h4 style="color:#f59e0b;">Pendiente</h4>
+        <ul>
+          <li>Disenar placa RFID en EasyEDA</li>
+          <li>Fabricar o simular la placa</li>
+          <li>Afinar respuesta del carrito</li>
+          <li>Documentar todo el proyecto</li>
+        </ul>
+      </div>
+    </div>
+    <div class="img-area stacked">
+      <div class="img-box"><img src="assets/pruebas_motores_tinkercad.jpg" alt="Simulacion en Tinkercad"></div>
+      <div class="img-box"><img src="assets/carrito_sensores.jpeg" alt="Sensores en el carrito"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 13 · CONCLUSIONES — Martínez Irvin ═══ -->
+<section class="slide">
+  <div class="split split-r">
+    <div class="txt">
+      <div class="sec">Conclusiones</div>
+      <h2>Que nos <em>llevamos</em></h2>
+      <div class="tl">
+        <div class="ti"><span class="tw">INVESTIGAR PRIMERO</span><p>Antes de tocar un componente, hay que entender que hay y para que sirve.</p></div>
+        <div class="ti"><span class="tw">SIMULAR AHORRA TIEMPO</span><p>Tinkercad nos confirmo que la logica estaba bien antes de armar nada fisico.</p></div>
+        <div class="ti"><span class="tw">LA INTEGRACION ES LA CLAVE</span><p>Un sensor no es nada solo. La utilidad esta en conectarlo con la accion.</p></div>
+        <div class="ti"><span class="tw">LO BASICO ALCANZA</span><p>Con un Arduino, un chip y un sensor ya se puede hacer algo que reaccione al mundo.</p></div>
+      </div>
+      <div class="box" style="margin-top:0.5rem;">
+        <h4>Equipo</h4>
+        <p>Martinez Irvin &middot; Jimenez Adrian &middot; Caballero Jostin &middot; Alfonso Gutierrez</p>
+        <p style="margin-top:0.15rem;color:#3b4258;">Profesor Eloy &middot; II Semestre 2026 &middot; UTP</p>
+      </div>
+    </div>
+    <div class="img-area stacked">
+      <div class="img-box"><img src="assets/prueba_motores_led.jpg" alt="Estado final"></div>
+      <div class="img-box"><img src="assets/idea_rfid.jpg" alt="Proyecto RFID"></div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<!-- ═══ NAV ═══ -->
+<div class="nav">
+  <button onclick="go(-1)">ANT</button>
+  <div class="pips" id="pips"></div>
+  <span class="ct" id="ct">1 / 13</span>
+  <button onclick="go(1)">SIG</button>
+</div>
+
+<script>
+const S=document.querySelectorAll('.slide');
+const P=document.getElementById('pips');
+let c=0;
+S.forEach((_,i)=>{const d=document.createElement('div');d.className='pip'+(i===0?' on':'');d.onclick=()=>{c=i;r();};P.appendChild(d);});
+function r(){S.forEach((s,i)=>s.classList.toggle('active',i===c));document.querySelectorAll('.pip').forEach((d,i)=>d.classList.toggle('on',i===c));document.getElementById('ct').textContent=(c+1)+' / '+S.length;}
+function go(d){c=Math.min(S.length-1,Math.max(0,c+d));r();}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();go(1);}if(e.key==='ArrowLeft'){e.preventDefault();go(-1);}if(e.key==='f'||e.key==='F'){if(!document.fullscreenElement)document.documentElement.requestFullscreen().catch(()=>{});else document.exitFullscreen();}});
+r();
+</script>
+
+</body>
+</html>
